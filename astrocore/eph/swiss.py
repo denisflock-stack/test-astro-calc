@@ -27,12 +27,12 @@ def init_ephemeris(ephe_path: str | None = None, ayanamsa: str = "Lahiri", sider
 def calc_ut(jd_ut: float, body: int, flags: int) -> Dict[str, Any]:
     """Thread-safe wrapper around ``swe.calc_ut``."""
     with _swe_lock:
-        lon, lat, dist, speed_lon = swe.calc_ut(jd_ut, body, flags)
+        pos, _ = swe.calc_ut(jd_ut, body, flags)
     return {
-        "lon": lon,
-        "lat": lat,
-        "dist": dist,
-        "speed_lon": speed_lon,
+        "lon": pos[0],
+        "lat": pos[1],
+        "dist": pos[2],
+        "speed_lon": pos[3],
     }
 
 
@@ -54,4 +54,6 @@ def sidtime(jd_ut: float) -> float:
 
 def ecl_nut(jd_ut: float):
     with _swe_lock:
-        return swe.calc_ut(jd_ut, swe.ECL_NUT)
+        pos, _ = swe.calc_ut(jd_ut, swe.ECL_NUT)
+    return pos
+

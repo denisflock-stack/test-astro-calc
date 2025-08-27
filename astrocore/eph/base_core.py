@@ -52,13 +52,13 @@ def build_base_core(payload: BaseInput) -> CoreOutput:
     return {
         "time": t,
         "location": {"lat": payload["latitude"], "lon": payload["longitude"], "elevation": 0},
-        "settings": settings.dict(),
+        "settings": settings.model_dump(),
         "geometry": geometry,
         "axes": axes,
         "bodies": bodies,
         "meta": {
             "engine": "swisseph",
-            "versions": {"lib": swe.version()},
+            "versions": {"lib": swe.version},
             "calc_ms": calc_ms,
         },
     }
