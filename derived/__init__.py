@@ -1,0 +1,1 @@
+"""Derived calculations placeholder."""
