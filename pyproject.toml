@@ -1,0 +1,13 @@
+[project]
+name = "astrocore"
+version = "0.1.0"
+description = "Astrological core calculations"
+requires-python = ">=3.11"
+dependencies = [
+    "pyswisseph",
+    "pydantic",
+]
+
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
