@@ -46,3 +46,4 @@ def test_print_core_output() -> None:
         print(f"{body_name:9s} trop={trop_str} sid={sid_str}")
 
     assert core
+
