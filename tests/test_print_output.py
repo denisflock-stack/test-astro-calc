@@ -27,4 +27,23 @@ def test_print_core_output() -> None:
     }
     core = build_base_core(payload)
     print(json.dumps(core, indent=2, sort_keys=True))
+
+    # Extra formatted output: planetary positions within zodiac signs
+    from derived.signs import lon_to_sign_deg
+
+    print("\nFormatted positions:")
+    for body_name, data in core.get("bodies", {}).items():
+        trop_str = "-"
+        if "lon_tropical_deg" in data:
+            sign, deg = lon_to_sign_deg(data["lon_tropical_deg"])
+            trop_str = f"{deg:.2f}\u00b0 {sign}"
+
+        sid_str = "-"
+        if "lon_sidereal_deg" in data:
+            sign_s, deg_s = lon_to_sign_deg(data["lon_sidereal_deg"])
+            sid_str = f"{deg_s:.2f}\u00b0 {sign_s}"
+
+        print(f"{body_name:9s} trop={trop_str} sid={sid_str}")
+
     assert core
+
