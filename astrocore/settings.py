@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 from pydantic import BaseModel, field_validator
+
 from typing import Literal
 
 from .config import AYANAMSA_MAP
