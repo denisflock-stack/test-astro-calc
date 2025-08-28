@@ -42,6 +42,12 @@ def houses(jd_ut: float, lat: float, lon: float):
         return swe.houses(jd_ut, lat, lon)
 
 
+def houses_ex(jd_ut: float, lat: float, lon: float, hsys: bytes):
+    """Thread-safe wrapper around ``swe.houses_ex`` allowing house system selection."""
+    with _swe_lock:
+        return swe.houses_ex(jd_ut, lat, lon, hsys)
+
+
 def get_ayanamsa(jd_ut: float) -> float:
     with _swe_lock:
         return swe.get_ayanamsa(jd_ut)
