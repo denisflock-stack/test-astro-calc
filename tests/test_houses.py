@@ -1,3 +1,4 @@
+import json
 import math
 
 from astrocore.houses import HouseRequest, compute_houses
@@ -19,6 +20,7 @@ def test_whole_sign_houses_structure():
         options={"return_width": True},
     )
     data = compute_houses(req)
+    print("Whole-sign houses output:\n" + json.dumps(data, indent=2, sort_keys=True))
 
     houses = data["houses"]
     angles = data["angles"]
@@ -47,6 +49,8 @@ def test_sripati_cusps_consistency():
         options={"return_borders": True, "return_width": True},
     )
     data = compute_houses(req)
+    print("Śrīpati houses output:\n" + json.dumps(data, indent=2, sort_keys=True))
+
     houses = data["houses"]
     angles = data["angles"]
 
