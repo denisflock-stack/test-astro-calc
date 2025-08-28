@@ -5,6 +5,10 @@ from dataclasses import dataclass, field
 from typing import Literal, Dict, List
 
 from .eph import swiss
+
+from .eph.base_core import compute_geometry
+from .eph.axes import compute_axes
+
 from .utils.angles import mod360
 
 
@@ -18,26 +22,6 @@ class HouseRequest:
     backend: Literal["auto", "swiss", "native"] = "auto"
     options: Dict[str, object] = field(default_factory=dict)
 
-
-def to_sidereal(lon_trop_deg: float, ayanamsa_value_deg: float) -> float:
-    """Convert tropical longitude to sidereal."""
-    return mod360(lon_trop_deg - ayanamsa_value_deg)
-
-
-def compute_angles_native(jd_ut: float, lat: float, lon: float, epsilon_mode: str = "true-of-date") -> Dict[str, float]:
-    """Compute Ascendant, Midheaven and derived angles (tropical)."""
-    # Use Swiss Ephemeris for angular calculations. Houses system does not
-    # influence the angles for quadrant methods, therefore we can rely on
-    # Placidus here.
-    _, ascmc = swiss.houses_ex(jd_ut, lat, lon, b"P")
-    asc = ascmc[0]
-    mc = ascmc[1]
-    return {
-        "asc_deg": asc,
-        "mc_deg": mc,
-        "desc_deg": mod360(asc + 180.0),
-        "ic_deg": mod360(mc + 180.0),
-    }
 
 
 def compute_sripati_from_angles(asc: float, mc: float) -> List[float]:
@@ -88,16 +72,17 @@ def compute_houses(req: HouseRequest) -> Dict[str, object]:
     if backend == "auto":
         backend = "native" if req.house_system in ("whole-sign", "sripati") else "swiss"
 
-    ayan_deg = swiss.get_ayanamsa(req.jd_ut)
-    epsilon_deg = swiss.ecl_nut(req.jd_ut)[0]
-    gst_hours = swiss.sidtime(req.jd_ut)
-    lst_hours = (gst_hours + req.geo_lon_deg / 15.0) % 24.0
-    ramc_deg = (lst_hours * 15.0) % 360.0
 
-    angles_trop = compute_angles_native(req.jd_ut, req.geo_lat_deg, req.geo_lon_deg)
+    geometry = compute_geometry(req.jd_ut, req.geo_lat_deg, req.geo_lon_deg)
+    ayan_deg = geometry["ayanamsa_value_deg"]
+
+    axes = compute_axes(
+        req.jd_ut, ayan_deg, req.geo_lat_deg, req.geo_lon_deg
+    )
     angles = {
-        "asc_deg_sid": to_sidereal(angles_trop["asc_deg"], ayan_deg),
-        "mc_deg_sid": to_sidereal(angles_trop["mc_deg"], ayan_deg),
+        "asc_deg_sid": axes["asc_sidereal_lon_deg"],
+        "mc_deg_sid": axes["mc_sidereal_lon_deg"],
+
     }
     angles["desc_deg_sid"] = mod360(angles["asc_deg_sid"] + 180.0)
     angles["ic_deg_sid"] = mod360(angles["mc_deg_sid"] + 180.0)
@@ -122,7 +107,8 @@ def compute_houses(req: HouseRequest) -> Dict[str, object]:
         else:  # placidus via Swiss
             try:
                 cusps_trop, _ = swiss.houses_ex(req.jd_ut, req.geo_lat_deg, req.geo_lon_deg, b"P")
-                cusps = [to_sidereal(c, ayan_deg) for c in cusps_trop]
+                cusps = [mod360(c - ayan_deg) for c in cusps_trop]
+
             except Exception:
                 status = "fallback"
                 notes = "fallback to sripati because placidus undefined at latitude"
@@ -139,9 +125,10 @@ def compute_houses(req: HouseRequest) -> Dict[str, object]:
         "house_system": req.house_system,
         "backend": backend,
         "ayanamsa": {"name": req.ayanamsa, "value_deg": ayan_deg},
-        "lst_deg": lst_hours * 15.0,
-        "epsilon_deg": epsilon_deg,
-        "ramc_deg": ramc_deg,
+        "lst_hours": geometry["lst_hours"],
+        "epsilon_deg": geometry["epsilon_deg"],
+        "armc_deg": geometry["armc_deg"],
+
         "status": status,
     }
     if notes:
@@ -165,7 +152,6 @@ def compute_houses(req: HouseRequest) -> Dict[str, object]:
 __all__ = [
     "HouseRequest",
     "compute_houses",
-    "compute_angles_native",
     "compute_sripati_from_angles",
-    "to_sidereal",
+
 ]
