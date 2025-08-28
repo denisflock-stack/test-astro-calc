@@ -5,8 +5,10 @@ from dataclasses import dataclass, field
 from typing import Literal, Dict, List
 
 from .eph import swiss
+
 from .eph.base_core import compute_geometry
 from .eph.axes import compute_axes
+
 from .utils.angles import mod360
 
 
@@ -19,6 +21,7 @@ class HouseRequest:
     house_system: Literal["whole-sign", "sripati", "placidus"] = "whole-sign"
     backend: Literal["auto", "swiss", "native"] = "auto"
     options: Dict[str, object] = field(default_factory=dict)
+
 
 
 def compute_sripati_from_angles(asc: float, mc: float) -> List[float]:
@@ -69,6 +72,7 @@ def compute_houses(req: HouseRequest) -> Dict[str, object]:
     if backend == "auto":
         backend = "native" if req.house_system in ("whole-sign", "sripati") else "swiss"
 
+
     geometry = compute_geometry(req.jd_ut, req.geo_lat_deg, req.geo_lon_deg)
     ayan_deg = geometry["ayanamsa_value_deg"]
 
@@ -78,6 +82,7 @@ def compute_houses(req: HouseRequest) -> Dict[str, object]:
     angles = {
         "asc_deg_sid": axes["asc_sidereal_lon_deg"],
         "mc_deg_sid": axes["mc_sidereal_lon_deg"],
+
     }
     angles["desc_deg_sid"] = mod360(angles["asc_deg_sid"] + 180.0)
     angles["ic_deg_sid"] = mod360(angles["mc_deg_sid"] + 180.0)
@@ -103,6 +108,7 @@ def compute_houses(req: HouseRequest) -> Dict[str, object]:
             try:
                 cusps_trop, _ = swiss.houses_ex(req.jd_ut, req.geo_lat_deg, req.geo_lon_deg, b"P")
                 cusps = [mod360(c - ayan_deg) for c in cusps_trop]
+
             except Exception:
                 status = "fallback"
                 notes = "fallback to sripati because placidus undefined at latitude"
@@ -122,6 +128,7 @@ def compute_houses(req: HouseRequest) -> Dict[str, object]:
         "lst_hours": geometry["lst_hours"],
         "epsilon_deg": geometry["epsilon_deg"],
         "armc_deg": geometry["armc_deg"],
+
         "status": status,
     }
     if notes:
@@ -146,4 +153,5 @@ __all__ = [
     "HouseRequest",
     "compute_houses",
     "compute_sripati_from_angles",
+
 ]

@@ -50,6 +50,7 @@ def test_sripati_cusps_consistency():
     )
     data = compute_houses(req)
     print("Śrīpati houses output:\n" + json.dumps(data, indent=2, sort_keys=True))
+
     houses = data["houses"]
     angles = data["angles"]
 
