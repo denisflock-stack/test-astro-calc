@@ -29,8 +29,8 @@ def compute_bodies(
 ) -> Dict[str, Dict[str, float]]:
     """Compute planetary positions."""
     flags = swe.FLG_SWIEPH | swe.FLG_SPEED
-    if settings.sidereal:
-        flags |= swe.FLG_SIDEREAL
+    # if settings.sidereal:
+    #     flags |= swe.FLG_SIDEREAL
     if settings.topocentric:
         swe.set_topo(lon, lat, 0)
         flags |= swe.FLG_TOPOCTR
