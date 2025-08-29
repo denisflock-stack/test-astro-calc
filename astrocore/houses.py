@@ -10,10 +10,12 @@ all supported house systems.  The contract is built around three arrays:
 Every array, when present, has length 12 with index ``0`` corresponding to the
 first house.  Values are normalised to ``[0, 360)``.
 """
+
 from __future__ import annotations
 
 from dataclasses import dataclass, field
 from typing import Literal, Dict, List
+
 import math
 
 from .eph import swiss
@@ -25,6 +27,7 @@ from .utils.angles import mod360
 # ---------------------------------------------------------------------------
 
 
+
 @dataclass
 class HouseRequest:
     jd_ut: float
@@ -34,6 +37,7 @@ class HouseRequest:
     house_system: Literal["whole-sign", "sripati", "placidus"] = "whole-sign"
     backend: Literal["auto", "swiss", "native"] = "auto"
     options: Dict[str, object] = field(default_factory=dict)
+
 
 
 # ---------------------------------------------------------------------------
@@ -66,6 +70,7 @@ def compute_sripati_from_angles(asc: float, mc: float) -> List[float]:
     Returned array contains midpoints of houses starting from index 0 = house I.
     """
 
+
     asc = mod360(asc)
     mc = mod360(mc)
     ic = mod360(mc + 180.0)
@@ -91,6 +96,7 @@ def compute_sripati_from_angles(asc: float, mc: float) -> List[float]:
     cusps[8] = mod360(cusps[2] + 180.0)   # 9th
 
     return [mod360(c) for c in cusps]
+
 
 
 def widths_from_borders(borders: List[float]) -> List[float]:
@@ -140,9 +146,11 @@ def compute_houses(req: HouseRequest) -> Dict[str, object]:
     module docstring.
     """
 
+
     backend = req.backend
     if backend == "auto":
         backend = "native" if req.house_system in ("whole-sign", "sripati") else "swiss"
+
 
     options = req.options or {}
     return_borders = bool(options.get("return_borders"))
@@ -230,6 +238,7 @@ def compute_houses(req: HouseRequest) -> Dict[str, object]:
         "lst_deg": lst_deg,  # alias of RAMC
         "epsilon_deg": epsilon_deg,
         "ramc_deg": ramc_deg,
+
         "status": status,
     }
     if notes:
@@ -257,4 +266,5 @@ __all__ = [
     "compute_angles_native",
     "to_sidereal",
 ]
+
 

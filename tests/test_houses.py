@@ -1,3 +1,4 @@
+
 """Tests for house computations."""
 
 import json
@@ -10,10 +11,12 @@ from astrocore.houses import (
 )
 
 
+
 REQ_ARGS = dict(
     jd_ut=2447013.856,
     geo_lat_deg=44.7153,
     geo_lon_deg=42.9979,
+
 )
 
 
@@ -29,6 +32,7 @@ def test_whole_sign_structure():
         **REQ_ARGS,
         house_system="whole-sign",
         options={"return_borders": True, "return_width": True},
+
     )
     data = compute_houses(req)
     print("Whole-sign houses output:\n" + json.dumps(data, indent=2, sort_keys=True))
@@ -38,6 +42,7 @@ def test_whole_sign_structure():
 
     assert houses["type"] == "sign-based"
     borders = houses["borders_deg_sid"]
+
     cusps = houses["cusps_deg_sid"]
     assert len(borders) == len(cusps) == 12
 
@@ -54,14 +59,17 @@ def test_sripati_consistency():
     req = HouseRequest(
         **REQ_ARGS,
         house_system="sripati",
+
         options={"return_borders": True, "return_width": True},
     )
     data = compute_houses(req)
     print("Śrīpati houses output:\n" + json.dumps(data, indent=2, sort_keys=True))
+
     houses = data["houses"]
     angles = data["angles"]
 
     cusps = houses["cusps_deg_sid"]
+
     borders = houses["borders_deg_sid"]
     widths = houses["width_deg"]
     assert len(cusps) == len(borders) == len(widths) == 12
@@ -133,4 +141,5 @@ def test_ayanamsa_switch_changes_values():
     asc1 = data1["angles"]["asc_deg_sid"]
     asc2 = data2["angles"]["asc_deg_sid"]
     assert not math.isclose(asc1, asc2, abs_tol=1e-3)
+
 
