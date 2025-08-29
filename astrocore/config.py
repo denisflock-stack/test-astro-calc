@@ -12,4 +12,5 @@ DEFAULT_EPHE_PATH = Path(os.environ.get("EPHE_PATH", Path(__file__).resolve().pa
 # Mapping of ayanamsa identifiers to Swiss Ephemeris constants
 AYANAMSA_MAP = {
     "Lahiri": swe.SIDM_LAHIRI,
+    "Krishnamurti": swe.SIDM_KRISHNAMURTI,
 }

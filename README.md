@@ -2,6 +2,12 @@
 
 Minimal astrological core calculations using Swiss Ephemeris.
 
+## Houses
+
+`astrocore.houses.compute_houses` returns house cusps, borders and widths in a
+unified structure for Whole-sign, Śrīpati and Placidus systems.  All longitudes
+are sidereal and normalised to `[0, 360)`.
+
 ## Example
 
 ```python
