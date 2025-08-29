@@ -13,9 +13,9 @@ from astrocore.houses import (
 
 
 REQ_ARGS = dict(
-    jd_ut=2447013.856,
-    geo_lat_deg=44.7153,
-    geo_lon_deg=42.9979,
+    jd_ut=2447021.6875,
+    geo_lat_deg=44.7153132,
+    geo_lon_deg=42.9978716,
 
 )
 
