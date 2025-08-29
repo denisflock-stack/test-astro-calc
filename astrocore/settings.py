@@ -15,6 +15,7 @@ class CoreSettingsModel(BaseModel):
     ayanamsa: str = "Lahiri"
     node_type: Literal["TRUE", "MEAN"] = "TRUE"
     topocentric: bool = False
+    sidereal_time_source: Literal["swiss", "native"] = "swiss"
 
     @field_validator("ayanamsa")
     def check_ayanamsa(cls, v: str) -> str:  # noqa: D401
