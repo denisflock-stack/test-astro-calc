@@ -50,18 +50,25 @@ def test_print_core_output() -> None:
 
     # Extra formatted output: planetary positions in DMS
     from astrocore.utils import format_dms360
+    from derived.signs import lon_to_sign_deg
+
+    def format_sign_dms(lon_deg: float) -> str:
+    """Вернёт 'DD° MM′ SS.SSS″ {Sign}' для долгот 0..360, где DMS — внутри знака."""
+    sign, deg_in_sign = lon_to_sign_deg(lon_deg)   # deg_in_sign в диапазоне 0..30
+    dms = format_dms360(deg_in_sign)               # форматируем 0..30 как DMS
+    return f"{dms} {sign}"
 
     print("\nFormatted positions:")
     for body_name, data in core.get("planets", {}).items():
         trop_str = "-"
         if "lon_tropical_deg" in data:
-            trop_str = format_dms360(data["lon_tropical_deg"])
+            trop_str = format_sign_dms(data["lon_tropical_deg"])
 
         sid_str = "-"
         if "lon_sidereal_deg" in data:
-            sid_str = format_dms360(data["lon_sidereal_deg"])
+            sid_str = format_sign_dms(data["lon_sidereal_deg"])
 
-        print(f"{body_name:9s} trop={trop_str} sid={sid_str}")
+        print(f"{body_name:9s} trop={trop_str:30s} sid={sid_str}")
 
     assert core
 
