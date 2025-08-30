@@ -134,8 +134,8 @@ def test_ayanamsa_switch_changes_values():
     data1 = compute_houses(req1)
     data2 = compute_houses(req2)
 
-    val1 = data1["meta"]["ayanamsa"]["value_deg"]
-    val2 = data2["meta"]["ayanamsa"]["value_deg"]
+    val1 = data1["meta"]["ayanamsa_deg"]
+    val2 = data2["meta"]["ayanamsa_deg"]
     assert not math.isclose(val1, val2, abs_tol=1e-3)
 
     asc1 = data1["angles"]["asc_deg_sid"]
