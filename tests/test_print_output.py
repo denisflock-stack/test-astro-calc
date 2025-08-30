@@ -29,7 +29,7 @@ def test_print_core_output() -> None:
         "settings": {
             "sidereal": True,
             "ayanamsa": "Lahiri",
-            "node_type": "MEAN",
+            "node_type": "TRUE",
             "topocentric": False,
         },
     }
