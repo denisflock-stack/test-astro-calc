@@ -28,6 +28,14 @@ def test_print_core_output() -> None:
     core = build_base_core(payload)
     print(json.dumps(core, indent=2, sort_keys=True))
 
+    # Ensure unified axis key names are present
+    assert set(core["axes"].keys()) == {
+        "asc_deg_sid",
+        "mc_deg_sid",
+        "asc_deg_trop",
+        "mc_deg_trop",
+    }
+
     # Extra formatted output: planetary positions within zodiac signs
     from derived.signs import lon_to_sign_deg
 

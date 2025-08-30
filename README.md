@@ -8,6 +8,10 @@ Minimal astrological core calculations using Swiss Ephemeris.
 unified structure for Whole-sign, Śrīpati and Placidus systems.  All longitudes
 are sidereal and normalised to `[0, 360)`.
 
+Ascendant and Midheaven axes are exposed in both sidereal and tropical
+longitudes using the keys `asc_deg_sid`, `mc_deg_sid`, `asc_deg_trop`, and
+`mc_deg_trop`.
+
 ## Example
 
 ```python
@@ -27,5 +31,6 @@ payload = {
     },
 }
 result = build_base_core(payload)
+print(result["axes"]["asc_deg_sid"], result["axes"]["mc_deg_sid"])
 print(result["bodies"]["Sun"])
 ```
