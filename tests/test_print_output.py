@@ -28,6 +28,9 @@ def test_print_core_output() -> None:
     core = build_base_core(payload)
     print(json.dumps(core, indent=2, sort_keys=True))
 
+    # Verify ayanamsa value is exposed with the new key
+    assert "ayanamsa_deg" in core["geometry"]
+
     # Ensure unified axis key names are present
     assert set(core["axes"].keys()) == {
         "asc_deg_sid",

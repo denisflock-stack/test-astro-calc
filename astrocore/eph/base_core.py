@@ -23,7 +23,7 @@ def compute_geometry(jd_ut: float, lat: float, lon: float) -> Dict[str, float]:
     lst_hours = (gst_hours + lon / 15.0) % 24.0
     armc_deg = (lst_hours * 15.0) % 360.0
     return {
-        "ayanamsa_value_deg": ayanamsa_deg,
+        "ayanamsa_deg": ayanamsa_deg,
         "epsilon_deg": epsilon,
         "gst_hours": gst_hours,
         "lst_hours": lst_hours,
@@ -40,12 +40,12 @@ def build_base_core(payload: BaseInput) -> CoreOutput:
     t = compute_time(payload["date"], payload["time"], payload["tz_offset_hours"])
     geometry = compute_geometry(t["jd_ut"], payload["latitude"], payload["longitude"])
     axes = compute_axes(
-        t["jd_ut"], geometry["ayanamsa_value_deg"], payload["latitude"], payload["longitude"]
+        t["jd_ut"], geometry["ayanamsa_deg"], payload["latitude"], payload["longitude"]
     )  # keys: asc_deg_sid, mc_deg_sid, asc_deg_trop, mc_deg_trop
     bodies = compute_bodies(
         t["jd_ut"],
         settings,
-        geometry["ayanamsa_value_deg"],
+        geometry["ayanamsa_deg"],
         payload["latitude"],
         payload["longitude"],
     )

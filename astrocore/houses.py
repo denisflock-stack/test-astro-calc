@@ -47,9 +47,9 @@ class HouseRequest:
 WSH_EPS = 1e-9
 
 
-def to_sidereal(lon_trop_deg: float, ayanamsa_value_deg: float) -> float:
+def to_sidereal(lon_trop_deg: float, ayanamsa_deg: float) -> float:
     """Convert a tropical longitude to sidereal using given ayanamsa."""
-    return mod360(lon_trop_deg - ayanamsa_value_deg)
+    return mod360(lon_trop_deg - ayanamsa_deg)
 
 
 def compute_angles_native(
@@ -160,17 +160,17 @@ def compute_houses(req: HouseRequest) -> Dict[str, object]:
     status = "ok"
     notes = ""
 
-    ayan_name = req.ayanamsa
+    ayanamsa_name = req.ayanamsa
     try:
-        swiss.set_sid_mode(ayan_name)
+        swiss.set_sid_mode(ayanamsa_name)
     except ValueError:
-        ayan_name = "Lahiri"
+        ayanamsa_name = "Lahiri"
         status = "warn"
         notes = f"unknown ayanamsa {req.ayanamsa}, fallback to Lahiri"
-        swiss.set_sid_mode(ayan_name)
+        swiss.set_sid_mode(ayanamsa_name)
 
     geometry = compute_geometry(req.jd_ut, req.geo_lat_deg, req.geo_lon_deg)
-    ayan_deg = geometry["ayanamsa_value_deg"]
+    ayanamsa_deg = geometry["ayanamsa_deg"]
     ramc_deg = geometry["armc_deg"]
     lst_deg = ramc_deg  # alias for backwards compatibility
     epsilon_deg = geometry["epsilon_deg"]
@@ -184,7 +184,7 @@ def compute_houses(req: HouseRequest) -> Dict[str, object]:
                 req.jd_ut, req.geo_lat_deg, req.geo_lon_deg, b"P"
             )
             asc_trop, mc_trop = ascmc[0], ascmc[1]
-            borders_sid = [to_sidereal(b, ayan_deg) for b in borders_trop]
+            borders_sid = [to_sidereal(b, ayanamsa_deg) for b in borders_trop]
             cusps_sid = madhya_from_borders(borders_sid)
 
             houses["type"] = "cuspal"
@@ -194,8 +194,8 @@ def compute_houses(req: HouseRequest) -> Dict[str, object]:
             if return_width:
                 houses["width_deg"] = widths_from_borders(borders_sid)
 
-            angles["asc_deg_sid"] = to_sidereal(asc_trop, ayan_deg)
-            angles["mc_deg_sid"] = to_sidereal(mc_trop, ayan_deg)
+            angles["asc_deg_sid"] = to_sidereal(asc_trop, ayanamsa_deg)
+            angles["mc_deg_sid"] = to_sidereal(mc_trop, ayanamsa_deg)
         except Exception:
             backend = "native"
             status = "fallback"
@@ -203,8 +203,8 @@ def compute_houses(req: HouseRequest) -> Dict[str, object]:
 
     if not angles:  # Whole-sign or Śrīpати or fallback branch
         ang = compute_angles_native(req.jd_ut, req.geo_lat_deg, req.geo_lon_deg)
-        asc_sid = to_sidereal(ang["asc_deg_trop"], ayan_deg)
-        mc_sid = to_sidereal(ang["mc_deg_trop"], ayan_deg)
+        asc_sid = to_sidereal(ang["asc_deg_trop"], ayanamsa_deg)
+        mc_sid = to_sidereal(ang["mc_deg_trop"], ayanamsa_deg)
         angles["asc_deg_sid"] = asc_sid
         angles["mc_deg_sid"] = mc_sid
 
@@ -235,7 +235,8 @@ def compute_houses(req: HouseRequest) -> Dict[str, object]:
     meta = {
         "house_system": req.house_system,
         "backend": backend,
-        "ayanamsa": {"name": ayan_name, "value_deg": ayan_deg},
+        "ayanamsa_name": ayanamsa_name,
+        "ayanamsa_deg": ayanamsa_deg,
         "lst_deg": lst_deg,  # alias of RAMC
         "epsilon_deg": epsilon_deg,
         "ramc_deg": ramc_deg,
