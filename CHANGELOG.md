@@ -1,4 +1,5 @@
 # Changelog
 
 ## Unreleased
-- Removed `lst_deg` metadata alias from `compute_houses`; use `ramc_deg` instead.
+- Renamed geometry key `armc_deg` to `ramc_deg` and removed the `lst_deg`
+  metadata alias from `compute_houses`.
