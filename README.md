@@ -34,3 +34,8 @@ result = build_base_core(payload)
 print(result["axes"]["asc_deg_sid"], result["axes"]["mc_deg_sid"])
 print(result["bodies"]["Sun"])
 ```
+
+## Changelog
+
+- `lst_deg` metadata alias has been removed from `compute_houses`; use
+  `ramc_deg` as the canonical key for the right ascension of the Midheaven.
