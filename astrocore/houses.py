@@ -172,7 +172,6 @@ def compute_houses(req: HouseRequest) -> Dict[str, object]:
     geometry = compute_geometry(req.jd_ut, req.geo_lat_deg, req.geo_lon_deg)
     ayanamsa_deg = geometry["ayanamsa_deg"]
     ramc_deg = geometry["armc_deg"]
-    lst_deg = ramc_deg  # alias for backwards compatibility
     epsilon_deg = geometry["epsilon_deg"]
 
     houses: Dict[str, object] = {}
@@ -237,7 +236,6 @@ def compute_houses(req: HouseRequest) -> Dict[str, object]:
         "backend": backend,
         "ayanamsa_name": ayanamsa_name,
         "ayanamsa_deg": ayanamsa_deg,
-        "lst_deg": lst_deg,  # alias of RAMC
         "epsilon_deg": epsilon_deg,
         "ramc_deg": ramc_deg,
 
