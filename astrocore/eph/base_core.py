@@ -8,8 +8,14 @@ import swisseph as swe
 
 from ..settings import CoreSettingsModel
 from ..utils.time import compute_time
-from ..utils.angles import mod360
 from ..types import BaseInput, CoreOutput
+from ..constants import (
+    AYANAMSA_DEG,
+    EPSILON_DEG,
+    GST_HOURS,
+    LST_HOURS,
+    RAMC_DEG,
+)
 from . import swiss
 from .bodies import compute_bodies
 from .axes import compute_axes
@@ -23,11 +29,11 @@ def compute_geometry(jd_ut: float, lat: float, lon: float) -> Dict[str, float]:
     lst_hours = (gst_hours + lon / 15.0) % 24.0
     ramc_deg = (lst_hours * 15.0) % 360.0
     return {
-        "ayanamsa_deg": ayanamsa_deg,
-        "epsilon_deg": epsilon,
-        "gst_hours": gst_hours,
-        "lst_hours": lst_hours,
-        "ramc_deg": ramc_deg,
+        AYANAMSA_DEG: ayanamsa_deg,
+        EPSILON_DEG: epsilon,
+        GST_HOURS: gst_hours,
+        LST_HOURS: lst_hours,
+        RAMC_DEG: ramc_deg,
     }
 
 
@@ -40,12 +46,12 @@ def build_base_core(payload: BaseInput) -> CoreOutput:
     t = compute_time(payload["date"], payload["time"], payload["tz_offset_hours"])
     geometry = compute_geometry(t["jd_ut"], payload["latitude"], payload["longitude"])
     axes = compute_axes(
-        t["jd_ut"], geometry["ayanamsa_deg"], payload["latitude"], payload["longitude"]
+        t["jd_ut"], geometry[AYANAMSA_DEG], payload["latitude"], payload["longitude"]
     )  # keys: asc_deg_sid, mc_deg_sid, asc_deg_trop, mc_deg_trop
     bodies = compute_bodies(
         t["jd_ut"],
         settings,
-        geometry["ayanamsa_deg"],
+        geometry[AYANAMSA_DEG],
         payload["latitude"],
         payload["longitude"],
     )
