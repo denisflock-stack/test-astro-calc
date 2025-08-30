@@ -39,10 +39,10 @@ def calc_ut(jd_ut: float, body: int, flags: int) -> Dict[str, Any]:
     with _swe_lock:
         pos, _ = swe.calc_ut(jd_ut, body, flags)
     return {
-        "lon": pos[0],
-        "lat": pos[1],
-        "dist": pos[2],
-        "speed_lon": pos[3],
+        "lon_deg": pos[0],
+        "lat_deg": pos[1],
+        "distance_au": pos[2],
+        "speed_lon_deg_per_day": pos[3],
     }
 
 
