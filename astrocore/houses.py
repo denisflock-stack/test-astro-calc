@@ -171,7 +171,7 @@ def compute_houses(req: HouseRequest) -> Dict[str, object]:
 
     geometry = compute_geometry(req.jd_ut, req.geo_lat_deg, req.geo_lon_deg)
     ayanamsa_deg = geometry["ayanamsa_deg"]
-    ramc_deg = geometry["armc_deg"]
+    ramc_deg = geometry["ramc_deg"]
     epsilon_deg = geometry["epsilon_deg"]
 
     houses: Dict[str, object] = {}

@@ -38,7 +38,9 @@ def test_whole_sign_structure():
     print("Whole-sign houses output:\n" + json.dumps(data, indent=2, sort_keys=True))
 
     houses = data["houses"]
+
     axes = data["axes"]
+
 
     assert houses["type"] == "sign-based"
     borders = houses["borders_deg_sid"]

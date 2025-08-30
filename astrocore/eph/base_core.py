@@ -21,13 +21,13 @@ def compute_geometry(jd_ut: float, lat: float, lon: float) -> Dict[str, float]:
     epsilon = swiss.ecl_nut(jd_ut)[0]
     gst_hours = swiss.sidtime(jd_ut)
     lst_hours = (gst_hours + lon / 15.0) % 24.0
-    armc_deg = (lst_hours * 15.0) % 360.0
+    ramc_deg = (lst_hours * 15.0) % 360.0
     return {
         "ayanamsa_deg": ayanamsa_deg,
         "epsilon_deg": epsilon,
         "gst_hours": gst_hours,
         "lst_hours": lst_hours,
-        "armc_deg": armc_deg,
+        "ramc_deg": ramc_deg,
     }
 
 

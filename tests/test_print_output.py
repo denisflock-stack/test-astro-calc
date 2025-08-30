@@ -30,6 +30,7 @@ def test_print_core_output() -> None:
 
     # Verify ayanamsa value is exposed with the new key
     assert "ayanamsa_deg" in core["geometry"]
+    assert "ramc_deg" in core["geometry"]
 
     # Ensure unified axis key names are present
     assert set(core["axes"].keys()) == {
