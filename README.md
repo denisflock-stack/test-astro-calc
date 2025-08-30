@@ -10,7 +10,8 @@ are sidereal and normalised to `[0, 360)`.
 
 Ascendant and Midheaven axes are exposed in both sidereal and tropical
 longitudes using the keys `asc_deg_sid`, `mc_deg_sid`, `asc_deg_trop`, and
-`mc_deg_trop`.
+`mc_deg_trop`. Metadata also includes the right ascension of the Midheaven
+as `ramc_deg`.
 
 ## Example
 
@@ -37,5 +38,5 @@ print(result["bodies"]["Sun"])
 
 ## Changelog
 
-- `lst_deg` metadata alias has been removed from `compute_houses`; use
-  `ramc_deg` as the canonical key for the right ascension of the Midheaven.
+- Renamed geometry key `armc_deg` to `ramc_deg` and removed the `lst_deg`
+  metadata alias from `compute_houses`.

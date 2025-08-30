@@ -39,6 +39,7 @@ def test_whole_sign_structure():
 
     houses = data["houses"]
     angles = data["angles"]
+    assert "ramc_deg" in data["meta"]
 
     assert houses["type"] == "sign-based"
     borders = houses["borders_deg_sid"]
