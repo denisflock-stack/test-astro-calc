@@ -13,9 +13,11 @@ from ..utils.angles import mod360
 from . import swiss
 
 
-def compute_axes(jd_ut: float, ayanamsa_deg: float, lat: float, lon: float) -> Dict[str, float]:
+def compute_axes(
+    jd_ut: float, ayanamsa_deg: float, latitude_deg: float, longitude_deg: float
+) -> Dict[str, float]:
     """Compute Ascendant and Midheaven."""
-    cusps, ascmc = swiss.houses(jd_ut, lat, lon)
+    cusps, ascmc = swiss.houses(jd_ut, latitude_deg, longitude_deg)
     asc_trop = ascmc[0]
     mc_trop = ascmc[1]
     asc_sid = mod360(asc_trop - ayanamsa_deg)

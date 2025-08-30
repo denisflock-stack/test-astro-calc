@@ -67,9 +67,8 @@ def build_base_core(payload: BaseInput) -> CoreOutput:
     return {
         "time": t,
         "location": {
-            "lat": payload["latitude_deg"],
-            "lon": payload["longitude_deg"],
-            "elevation": 0,
+            "latitude_deg": payload["latitude_deg"],
+            "longitude_deg": payload["longitude_deg"],
         },
         "settings": settings.model_dump(),
         "geometry": geometry,

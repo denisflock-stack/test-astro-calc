@@ -24,15 +24,15 @@ def compute_bodies(
     jd_ut: float,
     settings: CoreSettingsModel,
     ayanamsa_deg: float,
-    lat: float,
-    lon: float,
+    latitude_deg: float,
+    longitude_deg: float,
 ) -> Dict[str, Dict[str, float]]:
     """Compute planetary positions."""
     flags = swe.FLG_SWIEPH | swe.FLG_SPEED
     if settings.sidereal:
         flags |= swe.FLG_SIDEREAL
     if settings.topocentric:
-        swe.set_topo(lon, lat, 0)
+        swe.set_topo(longitude_deg, latitude_deg, 0)
         flags |= swe.FLG_TOPOCTR
 
     result: Dict[str, Dict[str, float]] = {}
