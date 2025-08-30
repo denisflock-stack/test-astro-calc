@@ -9,6 +9,12 @@ from astrocore.houses import (
     compute_houses,
     _whole_sign_borders,
 )
+from astrocore.constants import (
+    ASC_DEG_SID,
+    MC_DEG_SID,
+    AYANAMSA_DEG,
+    RAMC_DEG,
+)
 
 
 
@@ -39,7 +45,7 @@ def test_whole_sign_structure():
 
     houses = data["houses"]
     angles = data["angles"]
-    assert "ramc_deg" in data["meta"]
+    assert RAMC_DEG in data["meta"]
 
     assert houses["type"] == "sign-based"
     borders = houses["borders_deg_sid"]
@@ -47,7 +53,7 @@ def test_whole_sign_structure():
     cusps = houses["cusps_deg_sid"]
     assert len(borders) == len(cusps) == 12
 
-    expected_start = math.floor((angles["asc_deg_sid"] - 1e-9) / 30.0) * 30.0
+    expected_start = math.floor((angles[ASC_DEG_SID] - 1e-9) / 30.0) * 30.0
     assert math.isclose(borders[0], expected_start, abs_tol=1e-6)
 
     # cusps are borders + 15° and widths are all 30°
@@ -75,8 +81,8 @@ def test_sripati_consistency():
     widths = houses["width_deg"]
     assert len(cusps) == len(borders) == len(widths) == 12
 
-    assert math.isclose(cusps[0], angles["asc_deg_sid"], abs_tol=1e-6)
-    assert math.isclose(cusps[9], angles["mc_deg_sid"], abs_tol=1e-6)
+    assert math.isclose(cusps[0], angles[ASC_DEG_SID], abs_tol=1e-6)
+    assert math.isclose(cusps[9], angles[MC_DEG_SID], abs_tol=1e-6)
 
     for i in range(12):
         mid = (cusps[i - 1] + ((cusps[i] - cusps[i - 1]) % 360.0) / 2.0) % 360.0
@@ -102,8 +108,8 @@ def test_placidus_contract():
     cusps = houses["cusps_deg_sid"]
     widths = houses["width_deg"]
 
-    assert math.isclose(borders[0], angles["asc_deg_sid"], abs_tol=1e-6)
-    assert math.isclose(borders[9], angles["mc_deg_sid"], abs_tol=1e-6)
+    assert math.isclose(borders[0], angles[ASC_DEG_SID], abs_tol=1e-6)
+    assert math.isclose(borders[9], angles[MC_DEG_SID], abs_tol=1e-6)
 
     for i in range(12):
         mid = (borders[i] + ((borders[(i + 1) % 12] - borders[i]) % 360.0) / 2.0) % 360.0
@@ -135,12 +141,12 @@ def test_ayanamsa_switch_changes_values():
     data1 = compute_houses(req1)
     data2 = compute_houses(req2)
 
-    val1 = data1["meta"]["ayanamsa_deg"]
-    val2 = data2["meta"]["ayanamsa_deg"]
+    val1 = data1["meta"][AYANAMSA_DEG]
+    val2 = data2["meta"][AYANAMSA_DEG]
     assert not math.isclose(val1, val2, abs_tol=1e-3)
 
-    asc1 = data1["angles"]["asc_deg_sid"]
-    asc2 = data2["angles"]["asc_deg_sid"]
+    asc1 = data1["angles"][ASC_DEG_SID]
+    asc2 = data2["angles"][ASC_DEG_SID]
     assert not math.isclose(asc1, asc2, abs_tol=1e-3)
 
 

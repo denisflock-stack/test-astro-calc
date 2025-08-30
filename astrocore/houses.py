@@ -18,6 +18,17 @@ from typing import Literal, Dict, List
 
 import math
 
+from .constants import (
+    ASC_DEG_SID,
+    MC_DEG_SID,
+    ASC_DEG_TROP,
+    MC_DEG_TROP,
+    DESC_DEG_SID,
+    IC_DEG_SID,
+    AYANAMSA_DEG,
+    EPSILON_DEG,
+    RAMC_DEG,
+)
 from .eph import swiss
 from .eph.base_core import compute_geometry
 from .utils.angles import mod360
@@ -62,7 +73,7 @@ def compute_angles_native(
     """
 
     _, ascmc = swiss.houses_ex(jd_ut, lat, lon, b"O")
-    return {"asc_deg_trop": ascmc[0], "mc_deg_trop": ascmc[1]}
+    return {ASC_DEG_TROP: ascmc[0], MC_DEG_TROP: ascmc[1]}
 
 
 def compute_sripati_from_angles(asc: float, mc: float) -> List[float]:
@@ -170,9 +181,9 @@ def compute_houses(req: HouseRequest) -> Dict[str, object]:
         swiss.set_sid_mode(ayanamsa_name)
 
     geometry = compute_geometry(req.jd_ut, req.geo_lat_deg, req.geo_lon_deg)
-    ayanamsa_deg = geometry["ayanamsa_deg"]
-    ramc_deg = geometry["ramc_deg"]
-    epsilon_deg = geometry["epsilon_deg"]
+    ayanamsa_deg = geometry[AYANAMSA_DEG]
+    ramc_deg = geometry[RAMC_DEG]
+    epsilon_deg = geometry[EPSILON_DEG]
 
     houses: Dict[str, object] = {}
     angles: Dict[str, float] = {}
@@ -193,8 +204,8 @@ def compute_houses(req: HouseRequest) -> Dict[str, object]:
             if return_width:
                 houses["width_deg"] = widths_from_borders(borders_sid)
 
-            angles["asc_deg_sid"] = to_sidereal(asc_trop, ayanamsa_deg)
-            angles["mc_deg_sid"] = to_sidereal(mc_trop, ayanamsa_deg)
+            angles[ASC_DEG_SID] = to_sidereal(asc_trop, ayanamsa_deg)
+            angles[MC_DEG_SID] = to_sidereal(mc_trop, ayanamsa_deg)
         except Exception:
             backend = "native"
             status = "fallback"
@@ -202,10 +213,10 @@ def compute_houses(req: HouseRequest) -> Dict[str, object]:
 
     if not angles:  # Whole-sign or Śrīpати or fallback branch
         ang = compute_angles_native(req.jd_ut, req.geo_lat_deg, req.geo_lon_deg)
-        asc_sid = to_sidereal(ang["asc_deg_trop"], ayanamsa_deg)
-        mc_sid = to_sidereal(ang["mc_deg_trop"], ayanamsa_deg)
-        angles["asc_deg_sid"] = asc_sid
-        angles["mc_deg_sid"] = mc_sid
+        asc_sid = to_sidereal(ang[ASC_DEG_TROP], ayanamsa_deg)
+        mc_sid = to_sidereal(ang[MC_DEG_TROP], ayanamsa_deg)
+        angles[ASC_DEG_SID] = asc_sid
+        angles[MC_DEG_SID] = mc_sid
 
         if req.house_system == "whole-sign":
             houses["type"] = "sign-based"
@@ -228,16 +239,16 @@ def compute_houses(req: HouseRequest) -> Dict[str, object]:
                 if return_width:
                     houses["width_deg"] = widths_from_borders(borders)
 
-    angles["desc_deg_sid"] = mod360(angles["asc_deg_sid"] + 180.0)
-    angles["ic_deg_sid"] = mod360(angles["mc_deg_sid"] + 180.0)
+    angles[DESC_DEG_SID] = mod360(angles[ASC_DEG_SID] + 180.0)
+    angles[IC_DEG_SID] = mod360(angles[MC_DEG_SID] + 180.0)
 
     meta = {
         "house_system": req.house_system,
         "backend": backend,
         "ayanamsa_name": ayanamsa_name,
-        "ayanamsa_deg": ayanamsa_deg,
-        "epsilon_deg": epsilon_deg,
-        "ramc_deg": ramc_deg,
+        AYANAMSA_DEG: ayanamsa_deg,
+        EPSILON_DEG: epsilon_deg,
+        RAMC_DEG: ramc_deg,
 
         "status": status,
     }
