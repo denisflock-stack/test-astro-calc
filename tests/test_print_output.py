@@ -9,6 +9,14 @@ the printout provides the complete calculation result.
 import json
 
 from astrocore import build_base_core
+from astrocore.constants import (
+    ASC_DEG_SID,
+    MC_DEG_SID,
+    ASC_DEG_TROP,
+    MC_DEG_TROP,
+    AYANAMSA_DEG,
+    RAMC_DEG,
+)
 
 
 def test_print_core_output() -> None:
@@ -29,15 +37,15 @@ def test_print_core_output() -> None:
     print(json.dumps(core, indent=2, sort_keys=True))
 
     # Verify ayanamsa value is exposed with the new key
-    assert "ayanamsa_deg" in core["geometry"]
-    assert "ramc_deg" in core["geometry"]
+    assert AYANAMSA_DEG in core["geometry"]
+    assert RAMC_DEG in core["geometry"]
 
     # Ensure unified axis key names are present
     assert set(core["axes"].keys()) == {
-        "asc_deg_sid",
-        "mc_deg_sid",
-        "asc_deg_trop",
-        "mc_deg_trop",
+        ASC_DEG_SID,
+        MC_DEG_SID,
+        ASC_DEG_TROP,
+        MC_DEG_TROP,
     }
 
     # Extra formatted output: planetary positions within zodiac signs

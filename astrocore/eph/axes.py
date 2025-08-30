@@ -3,6 +3,12 @@ from __future__ import annotations
 
 from typing import Dict
 
+from ..constants import (
+    ASC_DEG_SID,
+    MC_DEG_SID,
+    ASC_DEG_TROP,
+    MC_DEG_TROP,
+)
 from ..utils.angles import mod360
 from . import swiss
 
@@ -15,8 +21,8 @@ def compute_axes(jd_ut: float, ayanamsa_deg: float, lat: float, lon: float) -> D
     asc_sid = mod360(asc_trop - ayanamsa_deg)
     mc_sid = mod360(mc_trop - ayanamsa_deg)
     return {
-        "asc_deg_sid": asc_sid,
-        "mc_deg_sid": mc_sid,
-        "asc_deg_trop": asc_trop,
-        "mc_deg_trop": mc_trop,
+        ASC_DEG_SID: asc_sid,
+        MC_DEG_SID: mc_sid,
+        ASC_DEG_TROP: asc_trop,
+        MC_DEG_TROP: mc_trop,
     }
