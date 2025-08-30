@@ -45,7 +45,7 @@ def test_whole_sign_structure():
 
     houses = data["houses"]
 
-    angles = data["angles"]
+    axes = data["axes"]
     assert RAMC_DEG in data["meta"]
 
 
@@ -56,7 +56,7 @@ def test_whole_sign_structure():
     assert len(borders) == len(cusps) == 12
 
 
-    expected_start = math.floor((angles[ASC_DEG_SID] - 1e-9) / 30.0) * 30.0
+    expected_start = math.floor((axes[ASC_DEG_SID] - 1e-9) / 30.0) * 30.0
 
     assert math.isclose(borders[0], expected_start, abs_tol=1e-6)
 
@@ -86,8 +86,8 @@ def test_sripati_consistency():
     assert len(cusps) == len(borders) == len(widths) == 12
 
 
-    assert math.isclose(cusps[0], angles[ASC_DEG_SID], abs_tol=1e-6)
-    assert math.isclose(cusps[9], angles[MC_DEG_SID], abs_tol=1e-6)
+    assert math.isclose(cusps[0], axes[ASC_DEG_SID], abs_tol=1e-6)
+    assert math.isclose(cusps[9], axes[MC_DEG_SID], abs_tol=1e-6)
 
 
     for i in range(12):
@@ -115,8 +115,8 @@ def test_placidus_contract():
     widths = houses["width_deg"]
 
 
-    assert math.isclose(borders[0], angles[ASC_DEG_SID], abs_tol=1e-6)
-    assert math.isclose(borders[9], angles[MC_DEG_SID], abs_tol=1e-6)
+    assert math.isclose(borders[0], axes[ASC_DEG_SID], abs_tol=1e-6)
+    assert math.isclose(borders[9], axes[MC_DEG_SID], abs_tol=1e-6)
 
 
     for i in range(12):
@@ -154,8 +154,8 @@ def test_ayanamsa_switch_changes_values():
     assert not math.isclose(val1, val2, abs_tol=1e-3)
 
 
-    asc1 = data1["angles"][ASC_DEG_SID]
-    asc2 = data2["angles"][ASC_DEG_SID]
+    asc1 = data1["axes"][ASC_DEG_SID]
+    asc2 = data2["axes"][ASC_DEG_SID]
 
     assert not math.isclose(asc1, asc2, abs_tol=1e-3)
 

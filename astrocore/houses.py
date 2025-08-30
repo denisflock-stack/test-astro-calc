@@ -205,8 +205,8 @@ def compute_houses(req: HouseRequest) -> Dict[str, object]:
                 houses["width_deg"] = widths_from_borders(borders_sid)
 
 
-            angles[ASC_DEG_SID] = to_sidereal(asc_trop, ayanamsa_deg)
-            angles[MC_DEG_SID] = to_sidereal(mc_trop, ayanamsa_deg)
+            axes[ASC_DEG_SID] = to_sidereal(asc_trop, ayanamsa_deg)
+            axes[MC_DEG_SID] = to_sidereal(mc_trop, ayanamsa_deg)
 
         except Exception:
             backend = "native"
@@ -218,8 +218,8 @@ def compute_houses(req: HouseRequest) -> Dict[str, object]:
 
         asc_sid = to_sidereal(ang[ASC_DEG_TROP], ayanamsa_deg)
         mc_sid = to_sidereal(ang[MC_DEG_TROP], ayanamsa_deg)
-        angles[ASC_DEG_SID] = asc_sid
-        angles[MC_DEG_SID] = mc_sid
+        axes[ASC_DEG_SID] = asc_sid
+        axes[MC_DEG_SID] = mc_sid
 
 
         if req.house_system == "whole-sign":
@@ -244,8 +244,8 @@ def compute_houses(req: HouseRequest) -> Dict[str, object]:
                     houses["width_deg"] = widths_from_borders(borders)
 
 
-    angles[DESC_DEG_SID] = mod360(angles[ASC_DEG_SID] + 180.0)
-    angles[IC_DEG_SID] = mod360(angles[MC_DEG_SID] + 180.0)
+    axes[DESC_DEG_SID] = mod360(axes[ASC_DEG_SID] + 180.0)
+    axes[IC_DEG_SID] = mod360(axes[MC_DEG_SID] + 180.0)
 
 
     meta = {
