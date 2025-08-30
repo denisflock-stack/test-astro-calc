@@ -33,7 +33,7 @@ payload = {
 }
 result = build_base_core(payload)
 print(result["axes"]["asc_deg_sid"], result["axes"]["mc_deg_sid"])
-print(result["bodies"]["Sun"])
+print(result["planets"]["Sun"])
 ```
 
 ## Changelog

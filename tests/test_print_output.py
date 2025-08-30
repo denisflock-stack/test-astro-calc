@@ -52,7 +52,7 @@ def test_print_core_output() -> None:
     from derived.signs import lon_to_sign_deg
 
     print("\nFormatted positions:")
-    for body_name, data in core.get("bodies", {}).items():
+    for body_name, data in core.get("planets", {}).items():
         trop_str = "-"
         if "lon_tropical_deg" in data:
             sign, deg = lon_to_sign_deg(data["lon_tropical_deg"])

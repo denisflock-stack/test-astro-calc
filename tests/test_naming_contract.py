@@ -3,8 +3,6 @@ from typing import Dict
 import pytest
 
 from astrocore import build_base_core
-from astrocore.houses import HouseRequest, compute_houses
-from astrocore.utils.time import compute_time
 
 
 @pytest.fixture
@@ -36,30 +34,18 @@ def test_location_keys_are_consistent(core_build_fn, sample_payload):
 
 def test_no_legacy_trop_key_in_planets(core_build_fn, sample_payload):
     core = core_build_fn(sample_payload)
-    planets = core["bodies"]
-    legacy_key = "lon_trop" + "_deg"
-    for p in planets.values():
-        assert legacy_key not in p
+    legacy = "lon_trop" + "_deg"
+    for p in core["planets"].values():
+        assert legacy not in p
 
 
-def test_houses_do_not_expose_madhya_alias(sample_payload):
-    t = compute_time(
-        sample_payload["date"],
-        sample_payload["time"],
-        sample_payload["tz_offset_hours"],
-    )
-    req = HouseRequest(
-        jd_ut=t["jd_ut"],
-        latitude_deg=sample_payload["latitude_deg"],
-        longitude_deg=sample_payload["longitude_deg"],
-    )
-    data = compute_houses(req)
-    houses = data["houses"]
-    legacy_alias = "madhya" + "_deg_sid"
-    assert legacy_alias not in houses
-    assert "cusps_deg_sid" in houses
-    assert len(houses["cusps_deg_sid"]) == 12
+def test_houses_expose_only_cusps(core_build_fn, sample_payload):
+    core = core_build_fn(sample_payload)
+    houses = core["houses"]
+    legacy = "madhya" + "_deg_sid"
+    assert legacy not in houses
+    assert "cusps_deg_sid" in houses and len(houses["cusps_deg_sid"]) == 12
 
 
-def test_time_offset_key(sample_payload):
+def test_payload_time_key(sample_payload):
     assert "tz_offset_hours" in sample_payload

@@ -17,7 +17,7 @@ from ..constants import (
     RAMC_DEG,
 )
 from . import swiss
-from .bodies import compute_bodies
+from .planets import compute_planets
 from .axes import compute_axes
 
 
@@ -55,13 +55,22 @@ def build_base_core(payload: BaseInput) -> CoreOutput:
         payload["latitude_deg"],
         payload["longitude_deg"],
     )  # keys: asc_deg_sid, mc_deg_sid, asc_deg_trop, mc_deg_trop
-    bodies = compute_bodies(
+    planets = compute_planets(
         t["jd_ut"],
         settings,
         geometry[AYANAMSA_DEG],
         payload["latitude_deg"],
         payload["longitude_deg"],
     )
+    from ..houses import HouseRequest, compute_houses
+
+    houses_req = HouseRequest(
+        jd_ut=t["jd_ut"],
+        latitude_deg=payload["latitude_deg"],
+        longitude_deg=payload["longitude_deg"],
+        ayanamsa=settings.ayanamsa,
+    )
+    houses_data = compute_houses(houses_req)["houses"]
     calc_ms = (perf_counter() - start) * 1000.0
 
     return {
@@ -73,7 +82,11 @@ def build_base_core(payload: BaseInput) -> CoreOutput:
         "settings": settings.model_dump(),
         "geometry": geometry,
         "axes": axes,
-        "bodies": bodies,
+        "planets": planets,
+        "houses": {
+            "house_system": houses_req.house_system,
+            "cusps_deg_sid": houses_data["cusps_deg_sid"],
+        },
         "meta": {
             "engine": "swisseph",
             "versions": {"lib": swe.version},
