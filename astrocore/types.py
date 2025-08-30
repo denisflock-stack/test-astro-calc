@@ -15,8 +15,8 @@ class BaseInput(TypedDict):
     date: str
     time: str
     tz_offset_hours: float
-    latitude: float
-    longitude: float
+    latitude_deg: float
+    longitude_deg: float
     settings: CoreSettings
 
 

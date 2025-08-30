@@ -22,8 +22,8 @@ payload = {
     "date": "2024-01-01",
     "time": "12:00",
     "tz_offset_hours": 1.0,
-    "latitude": 52.37,
-    "longitude": 4.90,
+    "latitude_deg": 52.37,
+    "longitude_deg": 4.90,
     "settings": {
         "sidereal": True,
         "ayanamsa": "Lahiri",

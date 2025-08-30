@@ -21,12 +21,14 @@ from .bodies import compute_bodies
 from .axes import compute_axes
 
 
-def compute_geometry(jd_ut: float, lat: float, lon: float) -> Dict[str, float]:
+def compute_geometry(
+    jd_ut: float, latitude_deg: float, longitude_deg: float
+) -> Dict[str, float]:
     """Compute geometric quantities for the moment."""
     ayanamsa_deg = swiss.get_ayanamsa(jd_ut)
     epsilon = swiss.ecl_nut(jd_ut)[0]
     gst_hours = swiss.sidtime(jd_ut)
-    lst_hours = (gst_hours + lon / 15.0) % 24.0
+    lst_hours = (gst_hours + longitude_deg / 15.0) % 24.0
     ramc_deg = (lst_hours * 15.0) % 360.0
     return {
         AYANAMSA_DEG: ayanamsa_deg,
@@ -44,22 +46,31 @@ def build_base_core(payload: BaseInput) -> CoreOutput:
 
     start = perf_counter()
     t = compute_time(payload["date"], payload["time"], payload["tz_offset_hours"])
-    geometry = compute_geometry(t["jd_ut"], payload["latitude"], payload["longitude"])
+    geometry = compute_geometry(
+        t["jd_ut"], payload["latitude_deg"], payload["longitude_deg"]
+    )
     axes = compute_axes(
-        t["jd_ut"], geometry[AYANAMSA_DEG], payload["latitude"], payload["longitude"]
+        t["jd_ut"],
+        geometry[AYANAMSA_DEG],
+        payload["latitude_deg"],
+        payload["longitude_deg"],
     )  # keys: asc_deg_sid, mc_deg_sid, asc_deg_trop, mc_deg_trop
     bodies = compute_bodies(
         t["jd_ut"],
         settings,
         geometry[AYANAMSA_DEG],
-        payload["latitude"],
-        payload["longitude"],
+        payload["latitude_deg"],
+        payload["longitude_deg"],
     )
     calc_ms = (perf_counter() - start) * 1000.0
 
     return {
         "time": t,
-        "location": {"lat": payload["latitude"], "lon": payload["longitude"], "elevation": 0},
+        "location": {
+            "lat": payload["latitude_deg"],
+            "lon": payload["longitude_deg"],
+            "elevation": 0,
+        },
         "settings": settings.model_dump(),
         "geometry": geometry,
         "axes": axes,

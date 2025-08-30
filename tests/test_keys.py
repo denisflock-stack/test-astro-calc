@@ -7,8 +7,8 @@ def test_core_key_sets() -> None:
         "date": "1987-08-14",
         "time": "08:30",
         "tz_offset_hours": 4.0,
-        "latitude": 44.7153132,
-        "longitude": 42.9978716,
+        "latitude_deg": 44.7153132,
+        "longitude_deg": 42.9978716,
         "settings": {
             "sidereal": True,
             "ayanamsa": "Lahiri",
