@@ -23,8 +23,6 @@ from .constants import (
     MC_DEG_SID,
     ASC_DEG_TROP,
     MC_DEG_TROP,
-    DESC_DEG_SID,
-    IC_DEG_SID,
     AYANAMSA_DEG,
     EPSILON_DEG,
     RAMC_DEG,
@@ -58,16 +56,15 @@ class HouseRequest:
 WSH_EPS = 1e-9
 
 
-def to_sidereal(lon_trop_deg: float, ayanamsa_deg: float) -> float:
+def to_sidereal(lon_tropical_deg: float, ayanamsa_deg: float) -> float:
     """Convert a tropical longitude to sidereal using given ayanamsa."""
-    return mod360(lon_trop_deg - ayanamsa_deg)
+    return mod360(lon_tropical_deg - ayanamsa_deg)
 
 
 def compute_angles_native(
     jd_ut: float,
     latitude_deg: float,
     longitude_deg: float,
-    epsilon_mode: str = "true-of-date",
 ) -> Dict[str, float]:
     """Return Ascendant and Midheaven longitudes in the tropical zodiac.
 
@@ -216,7 +213,7 @@ def compute_houses(req: HouseRequest) -> Dict[str, object]:
             status = "fallback"
             notes = "fallback to sripati because placidus undefined at latitude"
 
-    if not axes:  # Whole-sign or Śrīpати or fallback branch
+    if not axes:  # Whole-sign or Śrīpati or fallback branch
         ang = compute_angles_native(req.jd_ut, req.latitude_deg, req.longitude_deg)
 
         asc_sid = to_sidereal(ang[ASC_DEG_TROP], ayanamsa_deg)
@@ -230,7 +227,6 @@ def compute_houses(req: HouseRequest) -> Dict[str, object]:
             borders = _whole_sign_borders(asc_sid)
             cusps = [mod360(b + 15.0) for b in borders]
             houses["cusps_deg_sid"] = cusps
-            houses["madhya_deg_sid"] = cusps[:]  # alias for compatibility
             if return_borders:
                 houses["borders_deg_sid"] = borders
             if return_width:
@@ -247,8 +243,6 @@ def compute_houses(req: HouseRequest) -> Dict[str, object]:
                     houses["width_deg"] = widths_from_borders(borders)
 
 
-    axes[DESC_DEG_SID] = mod360(axes[ASC_DEG_SID] + 180.0)
-    axes[IC_DEG_SID] = mod360(axes[MC_DEG_SID] + 180.0)
 
 
     meta = {

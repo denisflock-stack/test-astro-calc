@@ -46,16 +46,18 @@ def calc_ut(jd_ut: float, body: int, flags: int) -> Dict[str, Any]:
     }
 
 
-def houses(jd_ut: float, lat: float, lon: float):
+def houses(jd_ut: float, latitude_deg: float, longitude_deg: float):
     """Thread-safe wrapper around ``swe.houses``."""
     with _swe_lock:
-        return swe.houses(jd_ut, lat, lon)
+        return swe.houses(jd_ut, latitude_deg, longitude_deg)
 
 
-def houses_ex(jd_ut: float, lat: float, lon: float, hsys: bytes):
+def houses_ex(
+    jd_ut: float, latitude_deg: float, longitude_deg: float, hsys: bytes
+):
     """Thread-safe wrapper around ``swe.houses_ex`` allowing house system selection."""
     with _swe_lock:
-        return swe.houses_ex(jd_ut, lat, lon, hsys)
+        return swe.houses_ex(jd_ut, latitude_deg, longitude_deg, hsys)
 
 
 def get_ayanamsa(jd_ut: float) -> float:
