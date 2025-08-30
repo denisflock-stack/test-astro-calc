@@ -153,7 +153,7 @@ def _whole_sign_borders(asc_sid: float) -> List[float]:
 def compute_houses(req: HouseRequest) -> Dict[str, object]:
     """Return house data according to :class:`HouseRequest`.
 
-    The result dictionary contains ``meta``, ``angles``, ``houses`` and
+    The result dictionary contains ``meta``, ``axes``, ``houses`` and
     ``classification`` keys.  ``houses`` follow the contract described in the
     module docstring.
     """
@@ -186,7 +186,7 @@ def compute_houses(req: HouseRequest) -> Dict[str, object]:
     epsilon_deg = geometry[EPSILON_DEG]
 
     houses: Dict[str, object] = {}
-    angles: Dict[str, float] = {}
+    axes: Dict[str, float] = {}
 
     if req.house_system == "placidus" and backend == "swiss":
         try:
@@ -204,19 +204,23 @@ def compute_houses(req: HouseRequest) -> Dict[str, object]:
             if return_width:
                 houses["width_deg"] = widths_from_borders(borders_sid)
 
+
             angles[ASC_DEG_SID] = to_sidereal(asc_trop, ayanamsa_deg)
             angles[MC_DEG_SID] = to_sidereal(mc_trop, ayanamsa_deg)
+
         except Exception:
             backend = "native"
             status = "fallback"
             notes = "fallback to sripati because placidus undefined at latitude"
 
-    if not angles:  # Whole-sign or Śrīpати or fallback branch
+    if not axes:  # Whole-sign or Śrīpати or fallback branch
         ang = compute_angles_native(req.jd_ut, req.geo_lat_deg, req.geo_lon_deg)
+
         asc_sid = to_sidereal(ang[ASC_DEG_TROP], ayanamsa_deg)
         mc_sid = to_sidereal(ang[MC_DEG_TROP], ayanamsa_deg)
         angles[ASC_DEG_SID] = asc_sid
         angles[MC_DEG_SID] = mc_sid
+
 
         if req.house_system == "whole-sign":
             houses["type"] = "sign-based"
@@ -239,8 +243,10 @@ def compute_houses(req: HouseRequest) -> Dict[str, object]:
                 if return_width:
                     houses["width_deg"] = widths_from_borders(borders)
 
+
     angles[DESC_DEG_SID] = mod360(angles[ASC_DEG_SID] + 180.0)
     angles[IC_DEG_SID] = mod360(angles[MC_DEG_SID] + 180.0)
+
 
     meta = {
         "house_system": req.house_system,
@@ -264,7 +270,7 @@ def compute_houses(req: HouseRequest) -> Dict[str, object]:
 
     return {
         "meta": meta,
-        "angles": angles,
+        "axes": axes,
         "houses": houses,
         "classification": classification,
     }

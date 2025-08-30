@@ -44,8 +44,10 @@ def test_whole_sign_structure():
     print("Whole-sign houses output:\n" + json.dumps(data, indent=2, sort_keys=True))
 
     houses = data["houses"]
+
     angles = data["angles"]
     assert RAMC_DEG in data["meta"]
+
 
     assert houses["type"] == "sign-based"
     borders = houses["borders_deg_sid"]
@@ -53,7 +55,9 @@ def test_whole_sign_structure():
     cusps = houses["cusps_deg_sid"]
     assert len(borders) == len(cusps) == 12
 
+
     expected_start = math.floor((angles[ASC_DEG_SID] - 1e-9) / 30.0) * 30.0
+
     assert math.isclose(borders[0], expected_start, abs_tol=1e-6)
 
     # cusps are borders + 15° and widths are all 30°
@@ -73,7 +77,7 @@ def test_sripati_consistency():
     print("Śrīpati houses output:\n" + json.dumps(data, indent=2, sort_keys=True))
 
     houses = data["houses"]
-    angles = data["angles"]
+    axes = data["axes"]
 
     cusps = houses["cusps_deg_sid"]
 
@@ -81,8 +85,10 @@ def test_sripati_consistency():
     widths = houses["width_deg"]
     assert len(cusps) == len(borders) == len(widths) == 12
 
+
     assert math.isclose(cusps[0], angles[ASC_DEG_SID], abs_tol=1e-6)
     assert math.isclose(cusps[9], angles[MC_DEG_SID], abs_tol=1e-6)
+
 
     for i in range(12):
         mid = (cusps[i - 1] + ((cusps[i] - cusps[i - 1]) % 360.0) / 2.0) % 360.0
@@ -102,14 +108,16 @@ def test_placidus_contract():
     )
     data = compute_houses(req)
     houses = data["houses"]
-    angles = data["angles"]
+    axes = data["axes"]
 
     borders = houses["borders_deg_sid"]
     cusps = houses["cusps_deg_sid"]
     widths = houses["width_deg"]
 
+
     assert math.isclose(borders[0], angles[ASC_DEG_SID], abs_tol=1e-6)
     assert math.isclose(borders[9], angles[MC_DEG_SID], abs_tol=1e-6)
+
 
     for i in range(12):
         mid = (borders[i] + ((borders[(i + 1) % 12] - borders[i]) % 360.0) / 2.0) % 360.0
@@ -145,8 +153,10 @@ def test_ayanamsa_switch_changes_values():
     val2 = data2["meta"][AYANAMSA_DEG]
     assert not math.isclose(val1, val2, abs_tol=1e-3)
 
+
     asc1 = data1["angles"][ASC_DEG_SID]
     asc2 = data2["angles"][ASC_DEG_SID]
+
     assert not math.isclose(asc1, asc2, abs_tol=1e-3)
 
 
