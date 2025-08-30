@@ -142,7 +142,7 @@ def _whole_sign_borders(asc_sid: float) -> List[float]:
 def compute_houses(req: HouseRequest) -> Dict[str, object]:
     """Return house data according to :class:`HouseRequest`.
 
-    The result dictionary contains ``meta``, ``angles``, ``houses`` and
+    The result dictionary contains ``meta``, ``axes``, ``houses`` and
     ``classification`` keys.  ``houses`` follow the contract described in the
     module docstring.
     """
@@ -175,7 +175,7 @@ def compute_houses(req: HouseRequest) -> Dict[str, object]:
     epsilon_deg = geometry["epsilon_deg"]
 
     houses: Dict[str, object] = {}
-    angles: Dict[str, float] = {}
+    axes: Dict[str, float] = {}
 
     if req.house_system == "placidus" and backend == "swiss":
         try:
@@ -193,19 +193,19 @@ def compute_houses(req: HouseRequest) -> Dict[str, object]:
             if return_width:
                 houses["width_deg"] = widths_from_borders(borders_sid)
 
-            angles["asc_deg_sid"] = to_sidereal(asc_trop, ayanamsa_deg)
-            angles["mc_deg_sid"] = to_sidereal(mc_trop, ayanamsa_deg)
+            axes["asc_deg_sid"] = to_sidereal(asc_trop, ayanamsa_deg)
+            axes["mc_deg_sid"] = to_sidereal(mc_trop, ayanamsa_deg)
         except Exception:
             backend = "native"
             status = "fallback"
             notes = "fallback to sripati because placidus undefined at latitude"
 
-    if not angles:  # Whole-sign or Śrīpати or fallback branch
+    if not axes:  # Whole-sign or Śrīpати or fallback branch
         ang = compute_angles_native(req.jd_ut, req.geo_lat_deg, req.geo_lon_deg)
         asc_sid = to_sidereal(ang["asc_deg_trop"], ayanamsa_deg)
         mc_sid = to_sidereal(ang["mc_deg_trop"], ayanamsa_deg)
-        angles["asc_deg_sid"] = asc_sid
-        angles["mc_deg_sid"] = mc_sid
+        axes["asc_deg_sid"] = asc_sid
+        axes["mc_deg_sid"] = mc_sid
 
         if req.house_system == "whole-sign":
             houses["type"] = "sign-based"
@@ -228,8 +228,8 @@ def compute_houses(req: HouseRequest) -> Dict[str, object]:
                 if return_width:
                     houses["width_deg"] = widths_from_borders(borders)
 
-    angles["desc_deg_sid"] = mod360(angles["asc_deg_sid"] + 180.0)
-    angles["ic_deg_sid"] = mod360(angles["mc_deg_sid"] + 180.0)
+    axes["desc_deg_sid"] = mod360(axes["asc_deg_sid"] + 180.0)
+    axes["ic_deg_sid"] = mod360(axes["mc_deg_sid"] + 180.0)
 
     meta = {
         "house_system": req.house_system,
@@ -253,7 +253,7 @@ def compute_houses(req: HouseRequest) -> Dict[str, object]:
 
     return {
         "meta": meta,
-        "angles": angles,
+        "axes": axes,
         "houses": houses,
         "classification": classification,
     }
