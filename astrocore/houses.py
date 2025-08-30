@@ -42,8 +42,8 @@ from .utils.angles import mod360
 @dataclass
 class HouseRequest:
     jd_ut: float
-    geo_lat_deg: float
-    geo_lon_deg: float
+    latitude_deg: float
+    longitude_deg: float
     ayanamsa: str = "Lahiri"
     house_system: Literal["whole-sign", "sripati", "placidus"] = "whole-sign"
     backend: Literal["auto", "swiss", "native"] = "auto"
@@ -64,7 +64,10 @@ def to_sidereal(lon_trop_deg: float, ayanamsa_deg: float) -> float:
 
 
 def compute_angles_native(
-    jd_ut: float, lat: float, lon: float, epsilon_mode: str = "true-of-date"
+    jd_ut: float,
+    latitude_deg: float,
+    longitude_deg: float,
+    epsilon_mode: str = "true-of-date",
 ) -> Dict[str, float]:
     """Return Ascendant and Midheaven longitudes in the tropical zodiac.
 
@@ -72,7 +75,7 @@ def compute_angles_native(
     across all latitudes without incurring Placidus errors.
     """
 
-    _, ascmc = swiss.houses_ex(jd_ut, lat, lon, b"O")
+    _, ascmc = swiss.houses_ex(jd_ut, latitude_deg, longitude_deg, b"O")
     return {ASC_DEG_TROP: ascmc[0], MC_DEG_TROP: ascmc[1]}
 
 
@@ -180,7 +183,7 @@ def compute_houses(req: HouseRequest) -> Dict[str, object]:
         notes = f"unknown ayanamsa {req.ayanamsa}, fallback to Lahiri"
         swiss.set_sid_mode(ayanamsa_name)
 
-    geometry = compute_geometry(req.jd_ut, req.geo_lat_deg, req.geo_lon_deg)
+    geometry = compute_geometry(req.jd_ut, req.latitude_deg, req.longitude_deg)
     ayanamsa_deg = geometry[AYANAMSA_DEG]
     ramc_deg = geometry[RAMC_DEG]
     epsilon_deg = geometry[EPSILON_DEG]
@@ -191,7 +194,7 @@ def compute_houses(req: HouseRequest) -> Dict[str, object]:
     if req.house_system == "placidus" and backend == "swiss":
         try:
             borders_trop, ascmc = swiss.houses_ex(
-                req.jd_ut, req.geo_lat_deg, req.geo_lon_deg, b"P"
+                req.jd_ut, req.latitude_deg, req.longitude_deg, b"P"
             )
             asc_trop, mc_trop = ascmc[0], ascmc[1]
             borders_sid = [to_sidereal(b, ayanamsa_deg) for b in borders_trop]
@@ -214,7 +217,7 @@ def compute_houses(req: HouseRequest) -> Dict[str, object]:
             notes = "fallback to sripati because placidus undefined at latitude"
 
     if not axes:  # Whole-sign or Śrīpати or fallback branch
-        ang = compute_angles_native(req.jd_ut, req.geo_lat_deg, req.geo_lon_deg)
+        ang = compute_angles_native(req.jd_ut, req.latitude_deg, req.longitude_deg)
 
         asc_sid = to_sidereal(ang[ASC_DEG_TROP], ayanamsa_deg)
         mc_sid = to_sidereal(ang[MC_DEG_TROP], ayanamsa_deg)

@@ -20,8 +20,8 @@ from astrocore.constants import (
 
 REQ_ARGS = dict(
     jd_ut=2447021.6875,
-    geo_lat_deg=44.7153132,
-    geo_lon_deg=42.9978716,
+    latitude_deg=44.7153132,
+    longitude_deg=42.9978716,
 
 )
 
@@ -131,8 +131,8 @@ def test_placidus_contract():
 def test_placidus_fallback_high_latitude():
     req = HouseRequest(
         jd_ut=2447013.856,
-        geo_lat_deg=70.0,
-        geo_lon_deg=0.0,
+        latitude_deg=70.0,
+        longitude_deg=0.0,
         ayanamsa="Lahiri",
         house_system="placidus",
     )
