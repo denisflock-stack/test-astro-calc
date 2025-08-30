@@ -52,8 +52,9 @@ def to_sidereal(lon_trop_deg: float, ayanamsa_value_deg: float) -> float:
     return mod360(lon_trop_deg - ayanamsa_value_deg)
 
 
-def compute_angles_native(jd_ut: float, lat: float, lon: float,
-                          epsilon_mode: str = "true-of-date") -> Dict[str, float]:
+def compute_angles_native(
+    jd_ut: float, lat: float, lon: float, epsilon_mode: str = "true-of-date"
+) -> Dict[str, float]:
     """Return Ascendant and Midheaven longitudes in the tropical zodiac.
 
     Uses a Swiss Ephemeris call with the Porphyry system to ensure validity
@@ -61,7 +62,7 @@ def compute_angles_native(jd_ut: float, lat: float, lon: float,
     """
 
     _, ascmc = swiss.houses_ex(jd_ut, lat, lon, b"O")
-    return {"asc_deg": ascmc[0], "mc_deg": ascmc[1]}
+    return {"asc_deg_trop": ascmc[0], "mc_deg_trop": ascmc[1]}
 
 
 def compute_sripati_from_angles(asc: float, mc: float) -> List[float]:
@@ -202,8 +203,8 @@ def compute_houses(req: HouseRequest) -> Dict[str, object]:
 
     if not angles:  # Whole-sign or Śrīpати or fallback branch
         ang = compute_angles_native(req.jd_ut, req.geo_lat_deg, req.geo_lon_deg)
-        asc_sid = to_sidereal(ang["asc_deg"], ayan_deg)
-        mc_sid = to_sidereal(ang["mc_deg"], ayan_deg)
+        asc_sid = to_sidereal(ang["asc_deg_trop"], ayan_deg)
+        mc_sid = to_sidereal(ang["mc_deg_trop"], ayan_deg)
         angles["asc_deg_sid"] = asc_sid
         angles["mc_deg_sid"] = mc_sid
 

@@ -39,7 +39,9 @@ def build_base_core(payload: BaseInput) -> CoreOutput:
     start = perf_counter()
     t = compute_time(payload["date"], payload["time"], payload["tz_offset_hours"])
     geometry = compute_geometry(t["jd_ut"], payload["latitude"], payload["longitude"])
-    axes = compute_axes(t["jd_ut"], geometry["ayanamsa_value_deg"], payload["latitude"], payload["longitude"])
+    axes = compute_axes(
+        t["jd_ut"], geometry["ayanamsa_value_deg"], payload["latitude"], payload["longitude"]
+    )  # keys: asc_deg_sid, mc_deg_sid, asc_deg_trop, mc_deg_trop
     bodies = compute_bodies(
         t["jd_ut"],
         settings,
