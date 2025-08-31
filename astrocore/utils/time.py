@@ -7,20 +7,20 @@ from typing import Dict, Any
 import swisseph as swe
 
 
-def compute_time(date: str, time_str: str, tz_offset: float) -> Dict[str, Any]:
+def compute_time(date: str, time_str: str, tz_offset_hours: float) -> Dict[str, Any]:
     """Normalize time input and compute Julian dates.
 
     Args:
         date: Date string in ``YYYY-MM-DD`` format.
         time_str: Time string ``HH:MM`` or ``HH:MM:SS``.
-        tz_offset: Offset from UTC in hours.
+        tz_offset_hours: Offset from UTC in hours.
 
     Returns:
         Dictionary with local/UTC datetimes and Julian day values.
     """
 
     dt_local = datetime.fromisoformat(f"{date}T{time_str}")
-    tzinfo = timezone(timedelta(hours=tz_offset))
+    tzinfo = timezone(timedelta(hours=tz_offset_hours))
     dt_local = dt_local.replace(tzinfo=tzinfo)
     dt_utc = dt_local.astimezone(timezone.utc)
 

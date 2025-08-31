@@ -24,22 +24,40 @@ def init_ephemeris(ephe_path: str | None = None, ayanamsa: str = "Lahiri", sider
         _initialized = True
 
 
+def set_sid_mode(name: str) -> None:
+    """Switch Swiss ephemeris sidereal mode by name."""
+
+    sid = AYANAMSA_MAP.get(name)
+    if sid is None:
+        raise ValueError(f"unknown ayanamsa {name}")
+    with _swe_lock:
+        swe.set_sid_mode(sid)
+
+
 def calc_ut(jd_ut: float, body: int, flags: int) -> Dict[str, Any]:
     """Thread-safe wrapper around ``swe.calc_ut``."""
     with _swe_lock:
         pos, _ = swe.calc_ut(jd_ut, body, flags)
     return {
-        "lon": pos[0],
-        "lat": pos[1],
-        "dist": pos[2],
-        "speed_lon": pos[3],
+        "lon_deg": pos[0],
+        "lat_deg": pos[1],
+        "distance_au": pos[2],
+        "speed_lon_deg_per_day": pos[3],
     }
 
 
-def houses(jd_ut: float, lat: float, lon: float):
+def houses(jd_ut: float, latitude_deg: float, longitude_deg: float):
     """Thread-safe wrapper around ``swe.houses``."""
     with _swe_lock:
-        return swe.houses(jd_ut, lat, lon)
+        return swe.houses(jd_ut, latitude_deg, longitude_deg)
+
+
+def houses_ex(
+    jd_ut: float, latitude_deg: float, longitude_deg: float, hsys: bytes
+):
+    """Thread-safe wrapper around ``swe.houses_ex`` allowing house system selection."""
+    with _swe_lock:
+        return swe.houses_ex(jd_ut, latitude_deg, longitude_deg, hsys)
 
 
 def get_ayanamsa(jd_ut: float) -> float:

@@ -1,0 +1,13 @@
+repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.2.1
+    hooks:
+      - id: ruff
+
+  - repo: local
+    hooks:
+      - id: forbid-legacy-names
+        name: Forbid legacy names
+        entry: bash -lc 'if rg -n --hidden -S -g "!docs/**" -g "!.venv/**" -g "!__pycache__/**" -g "!dist/**" -g "!build/**" -e "\\blon_trop_deg\\b|\\bmadhya_deg_sid\\b|\\btz_offset\\b(?!_hours)" ; then echo "Legacy names found"; exit 1; fi'
+        language: system
+        pass_filenames: false
