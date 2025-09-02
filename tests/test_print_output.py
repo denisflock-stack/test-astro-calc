@@ -53,10 +53,10 @@ def test_print_core_output() -> None:
     from derived.signs import lon_to_sign_deg
 
     def format_sign_dms(lon_deg: float) -> str:
-    """Вернёт 'DD° MM′ SS.SSS″ {Sign}' для долгот 0..360, где DMS — внутри знака."""
-    sign, deg_in_sign = lon_to_sign_deg(lon_deg)   # deg_in_sign в диапазоне 0..30
-    dms = format_dms360(deg_in_sign)               # форматируем 0..30 как DMS
-    return f"{dms} {sign}"
+        """Вернёт 'DD° MM′ SS.SSS″ {Sign}' для долгот 0..360, где DMS — внутри знака."""
+        sign, deg_in_sign = lon_to_sign_deg(lon_deg)   # deg_in_sign в диапазоне 0..30
+        dms = format_dms360(deg_in_sign)               # форматируем 0..30 как DMS
+        return f"{dms} {sign}"
 
     print("\nFormatted positions:")
     for body_name, data in core.get("planets", {}).items():
